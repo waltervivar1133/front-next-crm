@@ -1,3 +1,4 @@
+
 import Head from "next/head";
 import React from "react";
 import Sidebar from "../sidebar/Sidebar";
@@ -10,10 +11,15 @@ const Layout = ({ children }: LayoutProps) => {
       <Head>
         <title>CRM-React</title>
       </Head>
-      <div>Layout</div>
-      <div className="bg-gray-800 min-h-screen border-1 border-b-gray-900">
-      <Sidebar/>
-      {children}
+      <div className="bg-gray-200 min-h-screen">
+        <div className="flex min-h-screen">
+          <Sidebar />
+
+          <main className="sm:w-2/3 xl:4/5 sm:min-h-screen p-5">
+
+          {children}
+          </main>
+        </div>
       </div>
      
     </>

@@ -1,14 +1,12 @@
 import React from 'react'
 import Layout from '../src/components/layout/Layout'
 
-
-const About = () => {
+const Order = () => {
   return (
     <Layout>
-      <h2>About</h2>
+      <div>Order</div>
     </Layout>
-
   )
 }
 
-export default About
+export default Order
