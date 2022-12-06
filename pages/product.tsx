@@ -1,12 +1,12 @@
 import React from 'react'
 import Layout from '../src/components/layout/Layout'
 
-const Order = () => {
+const Product = () => {
   return (
     <Layout>
-      <div   className="text-2xl text-gray-800 font-light">Order</div>
+      <div className="text-2xl text-gray-800 font-light">Product</div>
     </Layout>
   )
 }
 
-export default Order
+export default Product
