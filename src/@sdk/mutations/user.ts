@@ -10,3 +10,14 @@ export const newUser = gql`
     }
   }
 `;
+
+export const validateUser = gql`
+  mutation NewUser($input: UserInput) {
+    newUser(input: $input) {
+      id
+      name
+      email
+      surname
+    }
+  }
+`;

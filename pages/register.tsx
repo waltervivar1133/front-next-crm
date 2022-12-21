@@ -10,14 +10,18 @@ import {
 import { useMutation } from "@apollo/client";
 import { newUser } from "../src/@sdk/mutations/user";
 import { MyFormValuesRegister } from "../types/MyFormValues";
+import MessageToast from "../src/components/messageToast/messageToast";
+import { useRouter } from "next/router";
 
 const Register = () => {
-  const [errormessage, setErrorMessage] = useState(null);
+  const [errormessage, setErrorMessage] = useState("");
+  const [createMessage, setCreateMessage] = useState("");
+  const router = useRouter();
   const [NewUser] = useMutation(newUser);
   const onSubmit = async (values: MyFormValuesRegister) => {
     const { name, surname, email, password } = values;
     try {
-      await NewUser({
+      const { data } = await NewUser({
         variables: {
           input: {
             name,
@@ -27,20 +31,28 @@ const Register = () => {
           },
         },
       });
+      console.log(data);
+      setCreateMessage(
+        `El usuario fue creado satisfactoriamente ${data.newUser.name}`
+      );
+      setTimeout(() => {
+        setCreateMessage("");
+        router.push("/login");
+      }, 4000);
     } catch (e: any) {
       setErrorMessage(e.message);
       setTimeout(() => {
-        setErrorMessage(null);
+        setErrorMessage("");
       }, 4000);
     }
   };
 
   const messageError = () => {
-    return (
-      <div className="bg-red-500 rounded-md py-2 px-3 w-full my-5 md:max-w-sm text-white font-bold">
-        <p>{errormessage}</p>
-      </div>
-    );
+    return <MessageToast message={errormessage} type={"error"} />;
+  };
+
+  const messageCreateUser = () => {
+    return <MessageToast message={createMessage} type={"success"} />;
   };
   return (
     <Layout>
@@ -53,7 +65,8 @@ const Register = () => {
           />
           Registro
         </a>
-        {errormessage && messageError()}
+        {(errormessage && messageError()) ||
+          (createMessage && messageCreateUser())}
         <Formik
           initialValues={initialValues}
           onSubmit={onSubmit}
@@ -61,7 +74,7 @@ const Register = () => {
         >
           {({ errors }) => (
             <Form
-              className="w-full p-2 md:p-0 md:mx-0 space-y-4 md:space-y-6 md:w-1/3"
+              className="w-full md:p-0 md:mx-0 space-y-4 md:space-y-6 md:w-1/3"
               noValidate
             >
               <div>

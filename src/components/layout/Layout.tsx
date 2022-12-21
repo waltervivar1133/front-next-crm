@@ -12,7 +12,7 @@ const Layout = ({ children }: LayoutProps) => {
         <title>CRM-React</title>
       </Head>
       {router.pathname === "/login" || router.pathname === "/register" ? (
-        <div className="bg-gray-800 min-h-screen flex flex-col justify-center items-center">
+        <div className="bg-gray-800 min-h-screen flex flex-col justify-center items-center px-4 md:p-0 ">
           {children}
         </div>
       ) : (
