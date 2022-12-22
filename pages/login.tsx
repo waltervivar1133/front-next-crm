@@ -1,18 +1,56 @@
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../src/components/layout/Layout";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useMutation } from "@apollo/client";
+import ErrorMessageForm from "../src/components/error/ErrorMessageForm";
+import { authenticatedUser } from "../src/@sdk/mutations/user";
+import { MyFormValuesLogin } from "../types/MyFormValues";
+import MessageToast from "../src/components/messageToast/messageToast";
 import {
   initialValues,
   validationSchema,
 } from "../helpers/validations/validationSchemaLogin";
-import ErrorMessageForm from "../src/components/error/ErrorMessageForm";
+import { useRouter } from "next/router";
 
-const onSubmit = () => {
-  console.log("onSubmit");
-};
 const Login = () => {
+  const [AuthenticatedUser] = useMutation(authenticatedUser);
+  const [userAccess, setUserAccess] = useState("");
+  const [errormessage, setErrorMessage] = useState("");
+  const router = useRouter();
+  const onSubmit = async (values: MyFormValuesLogin) => {
+    const { email, password } = values;
+    try {
+      const { data } = await AuthenticatedUser({
+        variables: {
+          input: {
+            email,
+            password,
+          },
+        },
+      });
+      console.log(data);
+      setUserAccess(`Auntenticando...`);
+      setTimeout(() => {
+        setUserAccess("");
+        router.push("/");
+      }, 2000);
+      const { token } = data.authenticatedUser;
+      localStorage.setItem("token", token);
+    } catch (e: any) {
+      setErrorMessage(e.message);
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 4000);
+    }
+  };
+
+  const messageError = () => {
+    return <MessageToast message={errormessage} type={"error"} />;
+  };
+  const messageLoginSuccess = () => {
+    return <MessageToast message={userAccess} type={"success"} />;
+  };
   return (
     <Layout>
       <div className="min-w-full text-center md:grid md:place-items-center">
@@ -24,7 +62,8 @@ const Login = () => {
           />
           Iniciar Sesión
         </a>
-
+        {(errormessage && messageError()) ||
+          (userAccess && messageLoginSuccess())}
         <Formik
           initialValues={initialValues}
           onSubmit={onSubmit}
